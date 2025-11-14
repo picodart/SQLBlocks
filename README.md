@@ -23,8 +23,7 @@ SQL Blocks Assembler позволяет декомпозировать SQL-за�
 ### Установка
 
 ```bash
-git clone <repository-url>
-cd sqlblocks
+pip install sql-dependency-manager
 ```
 ### Пример использования
 #### 1. Создайте SQL блоки в файлах
