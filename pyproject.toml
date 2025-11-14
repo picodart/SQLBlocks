@@ -3,24 +3,38 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sqlblocks"
+name = "sql-dependency-manager"
 version = "0.1.0"
-description = "SQL assembler"
+description = "SQL query assembler with dependency resolution for reusable code blocks"
 readme = "README.md"
-license = "LICENSE"
-keywords = ["library", "python"]
+license = {text = "MIT"}
+authors = [
+    {name = "picodart", email = "ya-artem@inbox.ru"},
+]
+keywords = ["sql", "cte", "query-builder", "database", "code-reuse", "sql-composer"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9", 
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Database",
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
 dependencies = [
-    # Ваши зависимости
-    # "requests>=2.25.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/picodart/SQLBlocks"
 Repository = "https://github.com/picodart/SQLBlocks"
+
+[tool.setuptools]
+packages = ["sqlblocks"]
+
+[tool.setuptools.package-dir]
+"sqlblocks" = "src/sqlblocks"
