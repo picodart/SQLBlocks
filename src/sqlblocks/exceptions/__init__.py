@@ -1,3 +1,6 @@
+class NonExistentLink(Exception):
+    pass
+
 class DuplicateNameError(Exception):
     pass
 
