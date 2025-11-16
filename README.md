@@ -1,4 +1,4 @@
-# SQL Blocks
+# SQL Assembly
 Open-source инструмент для борьбы с дублированием SQL-кода через композицию переиспользуемых блоков.
 
 ## Проблема
@@ -23,12 +23,14 @@ SQL Blocks Assembler позволяет декомпозировать SQL-за�
 ### Установка
 
 ```bash
-pip install sql-dependency-manager
+pip install sql-assembly
 ```
 ### Пример использования
-#### 1. Создайте SQL блоки в файлах
-blocks/users.sql
+#### 1. Создайте директорию sql_blocks
+#### 2. Создайте SQL блоки в директории sql_blocks
+users.sql
 ```sql
+-- name: "users_block"
 SELECT 
     id,
     name,
@@ -36,60 +38,50 @@ SELECT
 FROM users 
 WHERE active = true
 ```
-blocks/sales.sql
+sales.sql
 ```sql
-SELECT
-    u.name,
-    s.amount,
-    s.date
-FROM monthly_sales s
-JOIN users u ON s.user_id = u.id  -- зависит от блока 'users'
-```
-#### 2. Используйте в коде:
-
-```python
-from sqlblocks import BasicSQLBlock, SQLBlockRegistry, SQLAssembler
-from sqlblocks.plugins.folder_plugin import FolderPlugin
-from pathlib import Path
-
-# 1. Инициализация
-registry = SQLBlockRegistry()
-plugin = FolderPlugin('/path/to/sql/blocks')
-registry = SQLBlockRegistry()
-sqlassembly = SQLAssembler(registry, plugin)
-
-# 2. Инициализация SQL блоков
-registry.add_block(BasicSQLBlock(
-    name="users",
-    depends=None,
-    source="users.sql",
-))
-registry.add_block(BasicSQLBlock(
-    name="sales",
-    depends=("users",),
-    source="sales.sql",
-))
-
-# 3. Компиляция 
-query = sqlassembly.assemble_sql("main_block")
-```
-#### Результат
-```sql
-WITH
-users AS (
-    SELECT 
-        id,
-        name,
-        email
-    FROM users 
-    WHERE active = true
-)
+-- name: "sales_b"
+-- depends: "users_block"
 SELECT
     u.name,
     s.amount,
     s.date
 FROM sales s
-JOIN users u ON s.user_id = u.id
+JOIN users_block u ON s.user_id = u.id  -- зависит от блока "users_block"
+```
+#### 3. Создайте билд ваших sql блоков
+```bash
+sql-assembly build 
+```
+#### 4. Использование
+##### В консоле
+```bash
+> sql-assembly assembly sales_b
+WITH
+users_block AS (
+SELECT
+    id,
+    name,
+    email
+FROM users
+WHERE active = true
+),
+sales_b AS (
+SELECT
+    u.name,
+    s.amount,
+    s.date
+FROM sales s
+JOIN users_block u ON s.user_id = u.id  -- зависит от блока
+)
+SELECT * FROM sales_b
+```
+##### В коде
+```python
+from sqlblocks import SQLAssembler
+
+assembler = SQLAssembler()
+sql = assembler.assembly_sql("sales_b") # В sql будет лежать тот же выввод, что и выше
 ```
 
 ## Архитектура
@@ -102,7 +94,7 @@ JOIN users u ON s.user_id = u.id
 
 ## Поддерживаемые плагины
 
-- **✅ FolderPlugin** - загрузка из файловой системы
+- **✅ FolderPlugin** - загрузка из файловой системы (пока ограничена настройка)
 - **🔄 In progress:** БД, REST API, словари
 
 ## Текущий статус

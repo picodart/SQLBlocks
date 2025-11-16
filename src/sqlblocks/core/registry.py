@@ -1,12 +1,13 @@
-from core.entities import BasicSQLBlock
-import exceptions
+from sqlblocks.core.entities import BasicSQLBlock
+from sqlblocks import exceptions
 from typing import Dict
+from collections.abc import Generator
 
 
 class SQLBlockRegistry:
 
     def __init__(self):
-        self._blocks:  Dict[str, BasicSQLBlock]= {}
+        self._blocks:  Dict[str, BasicSQLBlock] = {}
 
     def add_block(self, block: BasicSQLBlock) -> None:
         if block.name in self._blocks:
@@ -19,7 +20,12 @@ class SQLBlockRegistry:
 
     def get_block(self, name: str) -> BasicSQLBlock:
         return self._blocks.get(name)
-    
+
+    @property
+    def all_blocks(self) -> Generator[BasicSQLBlock, None, None]:
+        for _, block in self._blocks.items():
+            yield block
+
     def _check_loop_exist(self):
         depends_count = {
             i: 0 for i in self._blocks

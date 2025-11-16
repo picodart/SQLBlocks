@@ -3,8 +3,8 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sql-dependency-manager"
-version = "0.1.0"
+name = "sql-assembly"
+version = "0.1.1"
 description = "SQL query assembler with dependency resolution for reusable code blocks"
 readme = "README.md"
 license = {text = "MIT"}
@@ -27,7 +27,12 @@ classifiers = [
 ]
 
 dependencies = [
+    "click>=8.0.0",
+    "PyYAML>=6.0.0",
 ]
+
+[project.scripts]
+sql-assembly = "sqlblocks.cli:cli"
 
 [project.urls]
 Homepage = "https://github.com/picodart/SQLBlocks"
